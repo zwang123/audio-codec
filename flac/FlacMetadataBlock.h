@@ -2,7 +2,6 @@
 #define __FLAC__FLAC_METADATA_BLOCK_H_INCLUDED
 #include <cstdint>
 #include <utility>
-#include "FlacMetadataBlockData.h"
 #include "FlacMetadataBlockStreaminfo.h"
 namespace flac {
 class FlacMetadataBlock {
@@ -21,7 +20,7 @@ private:
   uint32_t block_length = FlacMetadataBlockStreaminfo::block_size;
 
   // data
-  std::shared_ptr<FlacMetadataBlockData> block_data;
+  std::shared_ptr<class FlacMetadataBlockData> block_data;
 };
 }
 #endif // __FLAC__FLAC_METADATA_BLOCK_H_INCLUDED

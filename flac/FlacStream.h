@@ -9,8 +9,8 @@ namespace flac {
 class FlacStream {
 public:
   constexpr static char stream_marker[4] = {'f', 'L', 'a', 'C'};
-  //FlacStream() : metadata_blocks(1), frames(1) {}
-  FlacStream();
+  FlacStream() : metadata_blocks(1), frames(1) {}
+  explicit FlacStream(const char *);
 private:
   std::vector<FlacMetadataBlock> metadata_blocks;
   std::vector<FlacFrame> frames;
