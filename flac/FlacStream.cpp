@@ -4,6 +4,7 @@
 #include <string>
 #include "FlacStream.h"
 
+#include <iostream>
 
 namespace flac{
   FlacStream::FlacStream(const char *filename)
@@ -18,7 +19,14 @@ namespace flac{
     if (strncmp(buffer, "fLaC", 4) != 0)
       throw std::runtime_error(std::string("File ") + filename + 
           " is not a flac file");
-    metadata_blocks.emplace_back(file);
+    do {
+      metadata_blocks.emplace_back(file);
+    } while (!metadata_blocks.back().last_metadata_block_flag());
+
+    std::cout << metadata_blocks.size() << std::endl;
+    file.read(buffer, 4);
+    std::cout << (int)buffer[0] << std::endl;
+    std::cout << (int)buffer[1] << std::endl;
 
     //if (!file) {
     //  throw std::runtime_error(std::string("Cannot open file ") + filename);

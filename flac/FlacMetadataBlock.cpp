@@ -11,6 +11,10 @@ FlacMetadataBlock::FlacMetadataBlock(std::istream &is)
   //std::cout << __FILE__ << __LINE__ << std::endl;
   //std::cout << (int)block_flag << std::endl;
   //std::cout << (int)block_type() << std::endl;
+
+  char buffer[1024];
+  uint32_t remaining_len = block_length;
+
   switch (block_type()) {
     case 0: 
       block_data = std::make_shared<FlacMetadataBlockStreaminfo>
@@ -18,6 +22,11 @@ FlacMetadataBlock::FlacMetadataBlock(std::istream &is)
       break;
     default:
       // TODO
+      while (remaining_len > 1024) {
+        is.read(buffer, 1024);
+        remaining_len -= 1024;
+      }
+      is.read(buffer, remaining_len);
       break;
   }
 }
