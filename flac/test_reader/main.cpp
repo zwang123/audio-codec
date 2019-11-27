@@ -11,5 +11,6 @@ int main()
     std::cout << (unsigned)(unsigned char)x << " ";
   }
   std::cout << std::endl;
+  std::basic_ifstream<unsigned char> uifs;
   return 0;
 }

@@ -2,6 +2,7 @@
 #define __FLAC__FLAC_METADATA_BLOCK_STREAMINFO_H_INCLUDED
 
 #include <array>
+#include <cassert>
 #include <cstdint>
 #include "FlacMetadataBlockData.h"
 
@@ -33,6 +34,13 @@ public:
     total_samples  (_total_samples  ),
     md5(_md5) {}
 
+  FlacMetadataBlockStreaminfo(std::istream &is, uint32_t _block_size)
+  {
+    assert(_block_size == this->block_size);
+    read(is);
+    assert(is);
+  }
+
   int read(std::istream &);
 
 private:
@@ -44,7 +52,7 @@ private:
   uint8_t num_channels;
   uint8_t bits_per_sample;
   uint64_t total_samples;
-  std::array<uint64_t, 2> md5;
+  md5_type md5;
 };
 }
 #endif // __FLAC__FLAC_METADATA_BLOCK_STREAMINFO_H_INCLUDED

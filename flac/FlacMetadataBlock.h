@@ -8,8 +8,12 @@ class FlacMetadataBlock {
 public:
   bool last_metadata_block_flag() const 
   {return block_flag & LAST_METADATA_BLOCK_MASK;}
+  uint8_t block_type() const 
+  {return block_flag & ~LAST_METADATA_BLOCK_MASK;}
 
   FlacMetadataBlock() : block_data(std::make_shared<FlacMetadataBlockStreaminfo>()) {}
+
+  FlacMetadataBlock(std::istream &);
 
 private:
   constexpr static uint8_t LAST_METADATA_BLOCK_MASK = 1 << 7;
