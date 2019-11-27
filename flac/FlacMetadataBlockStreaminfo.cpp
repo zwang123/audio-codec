@@ -1,11 +1,13 @@
+#include <cassert>
 #include <iostream>
 #include "FlacErrorCodes.h"
 #include "FlacMetadataBlockStreaminfo.h"
 #include "FlacUtilities.h"
 
 namespace flac {
-int FlacMetadataBlockStreaminfo::read(std::istream &is)
+int FlacMetadataBlockStreaminfo::read(std::istream &is, uint32_t _block_size)
 {
+  assert(_block_size == this->block_size);
   uint16_t _min_block_size;
   uint16_t _max_block_size;
   uint32_t _min_frame_size;
@@ -58,6 +60,26 @@ int FlacMetadataBlockStreaminfo::read(std::istream &is)
 
 
 
+  return RETURN_SUCCESS;
+}
+
+int FlacMetadataBlockStreaminfo::write(std::ostream &os) const
+{
+  char buffer[block_size];
+  uint8_t remainder = 0;
+  unsigned remainder_digit = 0;
+  char *ptr = buffer;
+  ptr = package<16>(ptr, min_block_size, remainder, remainder_digit);
+  ptr = package<16>(ptr, max_block_size, remainder, remainder_digit);
+  ptr = package<24>(ptr, min_frame_size, remainder, remainder_digit);
+  ptr = package<24>(ptr, max_frame_size, remainder, remainder_digit);
+  ptr = package<20>(ptr, sample_rate, remainder, remainder_digit);
+  ptr = package<3>(ptr, num_channels - 1, remainder, remainder_digit);
+  ptr = package<5>(ptr, bits_per_sample - 1, remainder, remainder_digit);
+  ptr = package<36>(ptr, total_samples, remainder, remainder_digit);
+  ptr = package<64>(ptr, md5[0], remainder, remainder_digit);
+  ptr = package<64>(ptr, md5[1], remainder, remainder_digit);
+  os.write(buffer, block_size);
   return RETURN_SUCCESS;
 }
 }

@@ -23,7 +23,7 @@ public:
     uint8_t  _bits_per_sample = 16,
     uint64_t _total_samples   = 0,
     md5_type _md5             = md5_type{{}}
-  ) : 
+  ) : FlacMetadataBlockData(block_size),
     min_block_size (_min_block_size ),
     max_block_size (_max_block_size ), 
     min_frame_size (_min_frame_size ), 
@@ -35,13 +35,19 @@ public:
     md5(_md5) {}
 
   FlacMetadataBlockStreaminfo(std::istream &is, uint32_t _block_size)
+   : FlacMetadataBlockData(_block_size)
   {
-    assert(_block_size == this->block_size);
-    read(is);
+    //assert(_block_size == this->block_size);
+    read(is, _block_size);
     assert(is);
   }
 
-  int read(std::istream &);
+  int read(std::istream &is) {return read(is, block_size);}
+  int read(std::istream &, uint32_t) override;
+  int write(std::ostream &) const override;
+  //std::istream &read(std::istream &is) {return read(is, block_size);}
+  //std::istream &read(std::istream &, uint32_t) override;
+  //std::ostream &write(std::ostream &) const override {return 0;}
 
 private:
   uint16_t min_block_size;

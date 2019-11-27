@@ -38,11 +38,16 @@ int FlacMetadataBlock::write(std::ostream &os) const
   char header_buffer[4];
   uint8_t remainder = 0;
   unsigned remainder_digit = 0;
-  auto ptr = package(header_buffer, block_flag, remainder, remainder_digit);
-  ptr = package(ptr, block_length, remainder, remainder_digit);
+  auto ptr = package<8>(header_buffer, block_flag, remainder, remainder_digit);
+  ptr = package<24>(ptr, block_length, remainder, remainder_digit);
   os.write(header_buffer, 4);
+  
+  // error check
+
+  return block_data->write(os, block_length);
+  //block_data->write(os);
   // TODO
-  return RETURN_SUCCESS;
+  //return RETURN_SUCCESS;
 }
 
 }

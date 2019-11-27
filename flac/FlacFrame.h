@@ -13,6 +13,7 @@ public:
 
   int write(std::ostream &) const;
 private:
+  constexpr static uint32_t MAX_FRAME_HEADER_SIZE = 16;
   // header
   //bool variable_blocksize = false;
   uint16_t sync_word = 0xfff8; // fixed blocksize
