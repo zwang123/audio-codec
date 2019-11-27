@@ -3,6 +3,9 @@
 
 namespace flac {
 class FlacSubframeData {
+public:
+  virtual int write(std::ostream &, uint8_t &, unsigned &) const = 0;
+  virtual ~FlacSubframeData() {}
 protected:
   FlacSubframeData() = default;
 };

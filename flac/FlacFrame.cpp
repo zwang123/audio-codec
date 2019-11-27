@@ -20,11 +20,15 @@ int FlacFrame::write(std::ostream &os) const
   os.write(header_buffer, ptr - header_buffer);
 
   for (const auto &subframe : subframes) {
-    subframe.write(os);
+    subframe.write(os, remainder, remainder_digit);
   }
 
-  remainder = 0;
-  remainder_digit = 0;
+  if (remainder_digit) {
+    os.put(remainder << (8 - remainder_digit));
+    remainder = 0;
+    remainder_digit = 0;
+  }
+
   ptr = header_buffer;
   ptr = package<16>(ptr, crc16, remainder, remainder_digit);
   os.write(header_buffer, ptr - header_buffer);

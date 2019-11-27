@@ -149,8 +149,8 @@ namespace flac {
   }
 
   // remainder_digit < 8
-  template <std::size_t size, typename T>
-  char *package(char *buffer, T data, 
+  template <typename T>
+  char *package(char *buffer, std::size_t size, T data, 
       uint8_t &remainder, unsigned &remainder_digit) {
 
     std::size_t tot_size = (remainder_digit + size);
@@ -180,6 +180,12 @@ namespace flac {
     remainder = new_remainder;
     remainder_digit = new_digit;
     return buffer + write_byte;
+  }
+
+  template <std::size_t size, typename T>
+  char *package(char *buffer, T data, 
+      uint8_t &remainder, unsigned &remainder_digit) {
+    return package(buffer, size, data, remainder, remainder_digit);
   }
 }
 #endif // __FLAC__FLAC_UTILITIES_H_INCLUDED
