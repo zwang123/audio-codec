@@ -97,12 +97,36 @@ namespace flac {
     return is;
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  template <typename T>
+  std::istream &read_type_n(std::istream &is, std::size_t size,
+      T &data, uint8_t &remainder) {
+    const std::size_t read_size = (size + 7) >> 3 << 3;
+
+    if (size == read_size) {
+      unsigned char buffer[read_size >> 3];
+      is.read(reinterpret_cast<char*>(buffer), read_size >> 3);
+      if (is) {
+        data = 0;
+        for (std::size_t i = 0; i != read_size >> 3; data |= buffer[i++])
+          data <<= 8;
+      }
+    } else {
+      T buffer;
+      //std::cout << __FILE__ << __LINE__ << std::endl;
+      if (read_type_n(is, read_size, buffer, remainder)) {
+        remainder = buffer & (1 << (read_size - size)) - 1;
+        data = buffer >> (read_size - size);
+      }
+    }
+
+    return is;
+  }
 
   template <std::size_t size, typename T>
   std::istream &read_type_n(std::istream &is, T &data, uint8_t &remainder) {
     constexpr std::size_t read_size = (size + 7) >> 3 << 3;
-
     if (size == read_size) {
       unsigned char buffer[read_size >> 3];
       is.read(reinterpret_cast<char*>(buffer), read_size >> 3);
@@ -119,7 +143,6 @@ namespace flac {
         data = buffer >> (read_size - size);
       }
     }
-
     return is;
   }
 

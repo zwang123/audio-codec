@@ -3,16 +3,28 @@
 #include <cstdint>
 #include <vector>
 #include "FlacSubframe.h"
+
+//#include <iostream>
+
 namespace flac {
 class FlacFrame {
 public:
-  FlacFrame() : subframes(2) {}
+  FlacFrame() : subframes(2) {
+    //for (size_rate = 0x10; size_rate; size_rate += 0x10) {
+    //  std::cout << (unsigned)size_rate << " " << 
+    //    set_subframe_blocksize() << std::endl;
+    //}
+    //size_rate = 0xc9;
+  }
   FlacFrame(std::istream &);
 
   bool variable_blocksize() const { return sync_word & 1; }
 
+  int read(std::istream &);
   int write(std::ostream &) const;
 private:
+  uint16_t set_subframe_blocksize(std::istream &);
+
   constexpr static uint32_t MAX_FRAME_HEADER_SIZE = 16;
   // header
   //bool variable_blocksize = false;
@@ -21,7 +33,8 @@ private:
   uint8_t channel_bitdepth = 0x18; // L/R stereo, 16 bit-depth
   uint64_t frame_number = 0;
   // TODO
-  // blocksize bits not allowed
+  uint16_t blocksize = 4096;
+  unsigned blocksize_bitsize = 0;
   // bit sample rate not allowed
   uint8_t crc8 = 0xc2;
 
