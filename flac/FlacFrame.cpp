@@ -4,27 +4,60 @@
 #include "FlacUtilities.h"
 
 namespace flac {
+  const uint32_t FlacFrame::sample_rate_array[12] = { 0, 88200, 176400, 192000,
+    8000, 16000, 22050, 24000, 32000, 44100, 48000, 96000};
 
 uint16_t FlacFrame::set_subframe_blocksize(std::istream &is) { 
   if (size_rate & 0x80) {
     blocksize_bitsize = 0;
-    return (0x100 << ((size_rate & 0x70) >> 4));
+    blocksize = (0x100 << ((size_rate & 0x70) >> 4));
   } else if (size_rate & 0x40 && size_rate & 0x20) {
     blocksize_bitsize = 8 << ((size_rate >> 4) & 1);
     uint8_t remainder = 0;
-
-    read_type_n<16>(is, blocksize, remainder);
-    read_type_n<16>(is, blocksize, remainder);
-
-    return 0;
+    read_type_n(is, blocksize_bitsize, blocksize, remainder);
   } else if (size_rate & 0x40 || size_rate & 0x20) {
     blocksize_bitsize = 0;
-    return 144 << (size_rate >> 4);
+    blocksize = 144 << (size_rate >> 4);
   } else {
     blocksize_bitsize = 0;
     assert(size_rate >> 4);
-    return 192;
+    blocksize = 192;
   }
+  return blocksize;
+}
+
+uint32_t FlacFrame::set_sample_rate(std::istream &is)
+{
+  auto rate_idx = (size_rate & 0xf);
+  if (rate_idx < 12) {
+    samplerate_bitsize = 0;
+    samplerate = sample_rate_array[rate_idx];
+    // TODO rate_idx == 0
+  } else {
+    assert(rate_idx != 0xf);
+    samplerate_bitsize = 8 << static_cast<bool>(rate_idx & 3);
+    uint8_t remainder = 0;
+    read_type_n(is, samplerate_bitsize, samplerate, remainder);
+    if (rate_idx & 2) samplerate *= 10;
+    else if (!(rate_idx & 1)) samplerate *= 1000;
+  }
+  
+  return samplerate;
+}
+
+int FlacFrame::read(std::istream &is)
+{
+  read_uint16(is, sync_word);
+  read_uint8(is, size_rate);
+  read_uint8(is, channel_bitdepth);
+  // TODO
+  uint8_t remainder = 0;
+  read_type_n<8>(is, frame_number, remainder);
+  set_subframe_blocksize(is);
+  set_sample_rate(is);
+  read_uint8(is, crc8);
+  // TODO subframe
+  // TODO footer
 }
 
 int FlacFrame::write(std::ostream &os) const

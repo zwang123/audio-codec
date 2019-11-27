@@ -27,38 +27,41 @@ namespace flac{
 
     std::cout << metadata_blocks.size() << std::endl;
 
-    std::cout << std::hex;
+    // TODO
+    frames.emplace_back(file);
 
-    file.read(buffer, 4);
-    std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
+    //std::cout << std::hex;
 
-    std::cout << "frame number\n";
-    file.read(buffer, 4);
-    std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
+    //file.read(buffer, 4);
+    //std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
 
-    file.read(buffer, 4);
-    std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
+    //std::cout << "frame number\n";
+    //file.read(buffer, 4);
+    //std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
 
-    file.read(buffer, 4);
-    std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
+    //file.read(buffer, 4);
+    //std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
 
-    file.read(buffer, 4);
-    std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
-    std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
+    //file.read(buffer, 4);
+    //std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
+
+    //file.read(buffer, 4);
+    //std::cout << (unsigned)(unsigned char)buffer[0] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[1] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[2] << std::endl;
+    //std::cout << (unsigned)(unsigned char)buffer[3] << std::endl;
 
     //if (!file) {
     //  throw std::runtime_error(std::string("Cannot open file ") + filename);
