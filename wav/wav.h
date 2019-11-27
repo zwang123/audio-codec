@@ -25,8 +25,7 @@ public:
   }
 
   int read(const char *filename) {
-    std::ifstream file(filename); 
-    //, std::ifstream::in);// | std::ifstream::binary);
+    std::ifstream file(filename, std::ifstream::in | std::ifstream::binary);
     if (!file)
       return FILE_ERROR;
     // TODO exception free, should build a temp obj and copy to the current
@@ -90,7 +89,7 @@ public:
     if (chk != RETURN_SUCCESS)
       return chk;
 
-    std::ofstream file(filename); 
+    std::ofstream file(filename, std::ofstream::out | std::ofstream::binary); 
     if (!file)
       return FILE_ERROR;
     file.write(chunkID, 4);

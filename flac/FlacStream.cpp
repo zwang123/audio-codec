@@ -7,7 +7,7 @@
 namespace flac{
   FlacStream::FlacStream(const char *filename)
   {
-    std::ifstream file(filename);
+    std::ifstream file(filename, std::ifstream::in | std::ifstream::binary);
     if (!file) {
       throw std::runtime_error(std::string("Cannot open file ") + filename);
     }
