@@ -11,6 +11,9 @@ namespace flac{
     if (!file) {
       throw std::runtime_error(std::string("Cannot open file ") + filename);
     }
+    //if (!file) {
+    //  throw std::runtime_error(std::string("Cannot open file ") + filename);
+    //}
     file.close();
   }
 }

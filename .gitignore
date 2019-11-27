@@ -6,3 +6,5 @@ test
 .*.un~
 *~
 yyy.wav
+*.flac
+a.out
