@@ -1,4 +1,5 @@
 #include <iostream>
+#include "FlacErrorCodes.h"
 #include "FlacMetadataBlock.h"
 #include "FlacMetadataBlockStreaminfo.h"
 #include "FlacUtilities.h"
@@ -30,4 +31,11 @@ FlacMetadataBlock::FlacMetadataBlock(std::istream &is)
       break;
   }
 }
+
+int FlacMetadataBlock::write(std::ostream &os) const
+{
+  // TODO
+  return RETURN_SUCCESS;
+}
+
 }

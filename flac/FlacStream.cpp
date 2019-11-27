@@ -2,6 +2,8 @@
 #include <fstream>
 #include <stdexcept>
 #include <string>
+#include "FlacFrame.h"
+#include "FlacMetadataBlock.h"
 #include "FlacStream.h"
 
 #include <iostream>
@@ -61,6 +63,27 @@ namespace flac{
     //if (!file) {
     //  throw std::runtime_error(std::string("Cannot open file ") + filename);
     //}
+    file.close();
+  }
+
+  int FlacStream::write(const char *filename) const
+  {
+    std::ofstream file(filename, std::ios::out | std::ios::binary);
+    if (!file) {
+      throw std::runtime_error(std::string("Cannot open file ") + filename);
+    }
+
+    //file.write(stream_marker, 4);
+    file.write("fLaC", 4);
+    for (const auto &metablock : metadata_blocks)
+      metablock.write(file);
+    for (const auto &frame : frames)
+      frame.write(file);
+
+    if (!file) {
+      throw std::runtime_error(std::string("Cannot write file ") + filename);
+    }
+
     file.close();
   }
 }

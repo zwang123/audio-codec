@@ -15,6 +15,8 @@ public:
 
   FlacMetadataBlock(std::istream &);
 
+  int write(std::ostream &) const;
+
 private:
   constexpr static uint8_t LAST_METADATA_BLOCK_MASK = 1 << 7;
   constexpr static uint8_t DEFAULT_BLOCK_FLAG = LAST_METADATA_BLOCK_MASK | 0;

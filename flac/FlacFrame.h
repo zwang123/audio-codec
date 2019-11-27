@@ -1,6 +1,7 @@
 #ifndef __FLAC__FLAC_FRAME_H_INCLUDED
 #define __FLAC__FLAC_FRAME_H_INCLUDED
 #include <cstdint>
+#include <vector>
 #include "FlacSubframe.h"
 namespace flac {
 class FlacFrame {
@@ -9,6 +10,8 @@ public:
   FlacFrame(std::istream &);
 
   bool variable_blocksize() const { return sync_word & 1; }
+
+  int write(std::ostream &) const;
 private:
   // header
   //bool variable_blocksize = false;
