@@ -34,6 +34,13 @@ FlacMetadataBlock::FlacMetadataBlock(std::istream &is)
 
 int FlacMetadataBlock::write(std::ostream &os) const
 {
+  if (!block_data) return 1;
+  char header_buffer[4];
+  uint8_t remainder = 0;
+  unsigned remainder_digit = 0;
+  auto ptr = package(header_buffer, block_flag, remainder, remainder_digit);
+  ptr = package(ptr, block_length, remainder, remainder_digit);
+  os.write(header_buffer, 4);
   // TODO
   return RETURN_SUCCESS;
 }

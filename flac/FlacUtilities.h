@@ -148,10 +148,38 @@ namespace flac {
     return is;
   }
 
-  //template <typename T>
-  //std::ostream &write_type(std::ostream &os, T &data) {
-  //  os.write(reinterpret_cast<char*>(&data), sizeof(data));
-  //  return os;
-  //}
+  // remainder_digit < 8
+  template <std::size_t size, typename T>
+  char *package(char *buffer, T data, 
+      uint8_t &remainder, unsigned &remainder_digit) {
+
+    std::size_t tot_size = (remainder_digit + size);
+    if (tot_size < 8) {
+      remainder <<= size;
+      remainder |= (data & ((1 << size) - 1));
+      remainder_digit += size;
+      return buffer;
+    }
+
+    unsigned new_digit = tot_size & 7;
+    std::size_t write_byte = tot_size >> 3; // positive number
+
+    unsigned new_remainder = data & ((1 << new_digit) - 1);
+    data >>= new_digit;
+
+    auto ubuffer = reinterpret_cast<uint8_t *>(buffer);
+    for (auto ptr = ubuffer + write_byte; ptr != ubuffer; ) {
+      *--ptr = data & 0xff;
+      data >>= 8;
+    }
+
+    *ubuffer &= (1 << (8 - remainder_digit)) - 1;
+    *ubuffer |= remainder << (8 - remainder_digit);
+
+    // SUCCESS
+    remainder = new_remainder;
+    remainder_digit = new_digit;
+    return buffer + write_byte;
+  }
 }
 #endif // __FLAC__FLAC_UTILITIES_H_INCLUDED
