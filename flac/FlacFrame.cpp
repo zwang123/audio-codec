@@ -5,6 +5,10 @@
 #include "crc.h"
 #include "utf8.h"
 
+//streaminfo:
+//sample rate
+//bit per sample
+
 namespace flac {
   const uint32_t FlacFrame::sample_rate_array[12] = { 0, 88200, 176400, 192000,
     8000, 16000, 22050, 24000, 32000, 44100, 48000, 96000};

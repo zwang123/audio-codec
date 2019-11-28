@@ -9,16 +9,16 @@
 namespace flac {
 class FlacFrame {
 public:
-  FlacFrame() : subframes(2) {
-    //for (size_rate = 0x10; size_rate; size_rate += 0x10) {
-    //  std::cout << (unsigned)size_rate << " " << 
-    //    set_subframe_blocksize() << std::endl;
-    //}
-    //size_rate = 0xc9;
-  }
+  FlacFrame() : subframes(2) {}
   FlacFrame(std::istream &is) {read(is);} //TODO check validity
 
   bool variable_blocksize() const { return sync_word & 1; }
+
+  uint8_t bit_per_sample() const {
+    uint8_t bit_size_code = (channel_bitdepth >> 1) & 7;
+    // assert(bit_size_code);
+    return ((bit_size_code < 4) + bit_size_code) << 2;
+  }
 
   int read(std::istream &);
   int write(std::ostream &) const;
