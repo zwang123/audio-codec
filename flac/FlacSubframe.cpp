@@ -5,6 +5,14 @@
 #include "crc.h"
 
 namespace flac {
+int FlacSubframe::read
+  (std::istream &is, uint8_t &remainder, unsigned &remainder_digit,
+      uint16_t blocksize, uint8_t bits_per_sample)
+{
+  // TODO
+  return RETURN_SUCCESS;
+}
+
 int FlacSubframe::write(std::ostream &os, 
     uint8_t &remainder, unsigned &remainder_digit, uint16_t &crc16) const
 {

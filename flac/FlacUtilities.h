@@ -171,6 +171,22 @@ namespace flac {
     return is;
   }
 
+  template <typename T>
+  std::istream &read_type_n_with_remainder(std::istream &is, 
+      std::size_t size, T &data, 
+      uint8_t &remainder, unsigned &remainder_digit)
+  {
+    T buffer = remainder << (size -= remainder_digit);
+    T tmp;
+    if (read_type_n(is, size, tmp, remainder))
+      data = buffer | tmp;
+
+    //remainder_digit = (size + 7) & ~7 - size;
+    remainder_digit = ((size ^ 7) + 1 & 7);
+
+    return is;
+  }
+
   // remainder_digit < 8
   template <typename T>
   char *package(char *buffer, std::size_t size, T data, 

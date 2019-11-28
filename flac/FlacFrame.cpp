@@ -87,11 +87,24 @@ int FlacFrame::read(std::istream &is)
   set_subframe_blocksize(is);
   set_sample_rate(is);
   read_uint8(is, crc8);
-  // TODO subframe
-  // TODO footer
 
   //DEBUG
-  test_pStreamInfo();
+  //test_pStreamInfo();
+
+  uint8_t remainder = 0;
+  unsigned remainder_digit = 0;
+  subframes.clear();
+
+  // TODO check num_channels consistency?
+  for (auto num_channels = pStreamInfo->num_channels;
+       num_channels--;) {
+    subframes.emplace_back(is, remainder, remainder_digit,
+        blocksize, bits_per_sample);
+  }
+
+  assert(remainder == 0);
+
+  read_uint16(is, crc16);
 
   return RETURN_SUCCESS;
 }
