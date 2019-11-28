@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "FlacErrorCodes.h"
 #include "FlacSubframe.h"
+#include "FlacSubframeConstant.h"
 #include "FlacUtilities.h"
 #include "crc.h"
 
@@ -31,6 +32,8 @@ int FlacSubframe::read
     uint_fast8_t order = subframe_type & 7;
   } else if (subframe_type == 0) {
     // CONST
+    data = std::make_unique<FlacSubframeConstant>(is, remainder,
+        remainder_digit, bits_per_sample);
   } else if (subframe_type == 1) {
     // VERB
   } else {

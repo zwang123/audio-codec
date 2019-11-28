@@ -4,7 +4,7 @@
 namespace flac {
 class FlacSubframeData {
 public:
-  //virtual int write(std::ostream &, uint8_t &, unsigned &) const = 0;
+  virtual int read(std::istream &, uint8_t &, unsigned &) = 0;
   virtual int write(std::ostream &, uint8_t &, unsigned &, 
       uint16_t &) const = 0;
   virtual ~FlacSubframeData() {}

@@ -8,7 +8,7 @@
 namespace flac {
 class FlacSubframe {
 public:
-  FlacSubframe() : data(std::make_unique<FlacSubframeConstant<int16_t>>()) {}
+  FlacSubframe() : data(std::make_unique<FlacSubframeConstant>()) {}
   FlacSubframe(std::istream &is, uint8_t &remainder, unsigned &remainder_digit,
       uint16_t blocksize, uint8_t bits_per_sample)
   { read(is, remainder, remainder_digit, blocksize, bits_per_sample); }

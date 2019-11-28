@@ -7,14 +7,25 @@
 #include "crc.h"
 
 namespace flac {
-template <typename DataType>
+//template <typename DataType>
 class FlacSubframeConstant : public FlacSubframeData {
+using DataType = uint32_t;
 public:
   explicit FlacSubframeConstant(
       DataType _value = 0,
       uint8_t _bits_per_sample = 16)
     : value(_value)
     , bits_per_sample(_bits_per_sample) {}
+
+  FlacSubframeConstant(
+      std::istream &is, uint8_t &remainder, unsigned &remainder_digit,
+      uint8_t _bits_per_sample) : bits_per_sample ( _bits_per_sample )
+  { read(is, remainder, remainder_digit); }
+
+  int read(std::istream &is, uint8_t &remainder, unsigned &remainder_digit)
+      override
+  { read_type_n_with_remainder(is, bits_per_sample, value, 
+          remainder, remainder_digit); }
 
   int write(std::ostream &os, uint8_t &remainder, unsigned &remainder_digit, 
       uint16_t &crc16) const override
