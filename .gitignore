@@ -5,6 +5,7 @@ test
 .*.swp
 .*.un~
 *~
+xxxx.wav
 yyy.wav
 *.flac
 a.out

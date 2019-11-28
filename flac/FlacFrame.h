@@ -24,8 +24,8 @@ public:
   // DEBUG
   void test_pStreamInfo();
 
-private:
   constexpr static uint32_t MAX_FRAME_HEADER_SIZE = 16;
+private:
   static const uint32_t sample_rate_array[12];
 
   uint16_t set_subframe_blocksize(std::istream &);

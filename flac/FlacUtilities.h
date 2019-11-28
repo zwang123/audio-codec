@@ -163,6 +163,11 @@ namespace flac {
   std::istream &read_type_n_with_remainder(std::istream &is, T &data, 
       uint8_t &remainder)
   {
+    if (size <= remainder_digit) {
+      data = remainder >> (remainder_digit - size);
+      remainder &= (1 << (remainder_digit - size) - 1);
+      return is;
+    }
     T buffer = remainder << (size - remainder_digit);
     T tmp;
     if (read_type_n<size - remainder_digit>(is, tmp, remainder))
@@ -176,6 +181,11 @@ namespace flac {
       std::size_t size, T &data, 
       uint8_t &remainder, unsigned &remainder_digit)
   {
+    if (size <= remainder_digit) {
+      data = remainder >> (remainder_digit -= size);
+      remainder &= (1 << (remainder_digit) - 1);
+      return is;
+    }
     T buffer = remainder << (size -= remainder_digit);
     T tmp;
     if (read_type_n(is, size, tmp, remainder))

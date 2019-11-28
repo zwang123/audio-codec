@@ -9,6 +9,25 @@ int FlacSubframe::read
   (std::istream &is, uint8_t &remainder, unsigned &remainder_digit,
       uint16_t blocksize, uint8_t bits_per_sample)
 {
+  read_type_n_with_remainder(is, 8, header, remainder, remainder_digit);
+  wasted_bits = 0;
+  if (header & 1) {
+    uint8_t bit = 0;
+    do {
+      read_type_n_with_remainder(is, 1, bit, remainder, remainder_digit);
+      ++wasted_bits;
+    } while (bit == 0);
+  }
+
+  uint8_t subframe_type = header >> 1;
+  std::cout << (unsigned) subframe_type << std::endl;
+
+  if (subframe_type & 0x20) {
+    // LPC
+    uint_fast8_t order = (subframe_type & 0x1f) + 1;
+  } else if (true);
+  
+
   // TODO
   return RETURN_SUCCESS;
 }

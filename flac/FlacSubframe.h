@@ -16,6 +16,7 @@ public:
 
   int read(std::istream &, uint8_t &, unsigned &, uint16_t, uint8_t);
   int write(std::ostream &, uint8_t &, unsigned &, uint16_t &) const;
+  uint8_t get_subframe_type() const { return header >> 1; }
 private:
   uint8_t header = 0;
   uint32_t wasted_bits = 0;
