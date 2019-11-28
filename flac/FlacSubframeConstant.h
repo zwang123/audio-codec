@@ -25,7 +25,7 @@ public:
   int read(std::istream &is, uint8_t &remainder, unsigned &remainder_digit)
       override
   { read_type_n_with_remainder(is, bits_per_sample, value, 
-          remainder, remainder_digit); }
+          remainder, remainder_digit);  return RETURN_SUCCESS; }
 
   int write(std::ostream &os, uint8_t &remainder, unsigned &remainder_digit, 
       uint16_t &crc16) const override

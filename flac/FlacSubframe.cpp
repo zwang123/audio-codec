@@ -3,6 +3,9 @@
 #include "FlacErrorCodes.h"
 #include "FlacSubframe.h"
 #include "FlacSubframeConstant.h"
+#include "FlacSubframeFixed.h"
+#include "FlacSubframeLpc.h"
+#include "FlacSubframeVerbatim.h"
 #include "FlacUtilities.h"
 #include "crc.h"
 
@@ -27,22 +30,27 @@ int FlacSubframe::read
   if (subframe_type & 0x20) {
     // LPC
     uint_fast8_t order = (subframe_type & 0x1f) + 1;
+    data = std::make_unique<FlacSubframeLpc>(is, remainder,
+        remainder_digit, bits_per_sample, blocksize, order);
   } else if (subframe_type & 8) {
     // FIXED
     uint_fast8_t order = subframe_type & 7;
+    data = std::make_unique<FlacSubframeFixed>(is, remainder,
+        remainder_digit, bits_per_sample, blocksize, order);
   } else if (subframe_type == 0) {
     // CONST
     data = std::make_unique<FlacSubframeConstant>(is, remainder,
         remainder_digit, bits_per_sample);
   } else if (subframe_type == 1) {
     // VERB
+    data = std::make_unique<FlacSubframeVerbatim>(is, remainder,
+        remainder_digit, bits_per_sample, blocksize);
   } else {
     // ERROR
     throw std::runtime_error("unknown subframe type");
   }
   
-
-  // TODO
+  // TODO error check
   return RETURN_SUCCESS;
 }
 
