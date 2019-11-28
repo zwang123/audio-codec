@@ -20,7 +20,7 @@ public:
       uint8_t _bits_per_sample, uint16_t _blocksize, uint_fast8_t _order)
     : bits_per_sample(_bits_per_sample)
     , warm_up_samples(_order)
-    , residual(_blocksize) 
+    , residual(_blocksize, _order) 
   { read(is, remainder, remainder_digit); }
   //TODO
 

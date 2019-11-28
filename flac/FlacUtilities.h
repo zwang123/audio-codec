@@ -4,6 +4,8 @@
 #include <cstddef>
 #include <iostream>
 
+// read should overwrite data, and give 0 on unwritten bits
+// write should not care about higher bits
 namespace flac {
   // Flac is big endian
   
