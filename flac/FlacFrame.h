@@ -35,7 +35,7 @@ private:
   uint8_t channel_bitdepth = 0x18; // L/R stereo, 16 bit-depth
   uint64_t frame_number = 0;
 
-  uint16_t blocksize = 4096;
+  uint16_t blocksize = 4096; // might overflow if blocksize is 65536
   unsigned blocksize_bitsize = 0;
 
   uint32_t samplerate = 44100;

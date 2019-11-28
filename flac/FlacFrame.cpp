@@ -2,6 +2,7 @@
 #include "FlacErrorCodes.h"
 #include "FlacFrame.h"
 #include "FlacUtilities.h"
+#include "utf8.h"
 
 namespace flac {
   const uint32_t FlacFrame::sample_rate_array[12] = { 0, 88200, 176400, 192000,
@@ -15,6 +16,7 @@ uint16_t FlacFrame::set_subframe_blocksize(std::istream &is) {
     blocksize_bitsize = 8 << ((size_rate >> 4) & 1);
     uint8_t remainder = 0;
     read_type_n(is, blocksize_bitsize, blocksize, remainder);
+    ++blocksize; // TODO might overflow
   } else if (size_rate & 0x40 || size_rate & 0x20) {
     blocksize_bitsize = 0;
     blocksize = 144 << (size_rate >> 4);
@@ -51,8 +53,9 @@ int FlacFrame::read(std::istream &is)
   read_uint8(is, size_rate);
   read_uint8(is, channel_bitdepth);
   // TODO
-  uint8_t remainder = 0;
-  read_type_n<8>(is, frame_number, remainder);
+
+  frame_number = utf8_decode_stream(is);
+
   set_subframe_blocksize(is);
   set_sample_rate(is);
   read_uint8(is, crc8);
@@ -69,9 +72,15 @@ int FlacFrame::write(std::ostream &os) const
   ptr = package<16>(ptr, sync_word, remainder, remainder_digit);
   ptr = package<8>(ptr, size_rate, remainder, remainder_digit);
   ptr = package<8>(ptr, channel_bitdepth, remainder, remainder_digit);
-  // TODO utf encode
-  ptr = package<8>(ptr, frame_number, remainder, remainder_digit);
-  // TODO block size/sample rate
+
+  ptr = utf8_encode(frame_number, ptr);
+  //ptr = package<8>(ptr, frame_number, remainder, remainder_digit);
+  
+  ptr = package(ptr, blocksize_bitsize, blocksize - 1, 
+      remainder, remainder_digit);
+  
+  // TODO sample rate
+
   ptr = package<8>(ptr, crc8, remainder, remainder_digit);
   os.write(header_buffer, ptr - header_buffer);
 
