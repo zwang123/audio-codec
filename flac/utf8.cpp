@@ -5,7 +5,6 @@ namespace flac {
   {
     char *rtn = out;
     if (x & 0xfffffff80) {
-      //uint_fast8_t tmp = x & 0x3f;
       do {
         *rtn++ = 0x80 | (x & 0x3f);
         x >>= 6;
@@ -16,38 +15,7 @@ namespace flac {
       std::reverse(out, rtn);
     } else {
       *rtn++ = x;
-      //*out++ = x;
-      //rtn = out;
     }
     return rtn;
-   
-    //char *rtn = out;
-    //if (x & 0xfffffff80) {
-    //  if (x & 0xffffff800) {
-    //    if (x & 0xfffff0000) {
-    //      ;
-    //    } else {
-    //      *out++ = (x >> 12) | 0xe0;
-    //      rtn = out + 2;
-    //    }
-    //  } else {
-    //    *out++ = (x >> 6) | 0xc0;
-    //    rtn = out + 1;
-    //  }
-    //} else {
-    //  *out++ = x;
-    //  rtn = out;
-    //}
-
-    //0760000000000;
-    //uint64_t rtn = 0;
-    //uint_fast8_t tmp = x & 0x3f;
-    //x >>= 6;
-    //;
-  }
-
-  uint64_t utf8_decode(uint64_t)
-  {
-    ;
   }
 }

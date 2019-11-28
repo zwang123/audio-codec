@@ -11,6 +11,8 @@ void test_encode(uint64_t input)
   for (char *p = buffer; p != end;)
     std::cout << (unsigned)static_cast<unsigned char>(*p++) << " ";
   std::cout << std::endl;
+  std::cout << flac::utf8_decode(buffer);
+  std::cout << std::endl;
   std::cout << std::endl;
 }
 
