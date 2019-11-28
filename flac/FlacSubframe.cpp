@@ -2,10 +2,11 @@
 #include "FlacErrorCodes.h"
 #include "FlacSubframe.h"
 #include "FlacUtilities.h"
+#include "crc.h"
 
 namespace flac {
 int FlacSubframe::write(std::ostream &os, 
-    uint8_t &remainder, unsigned &remainder_digit) const
+    uint8_t &remainder, unsigned &remainder_digit, uint16_t &crc16) const
 {
   char buffer[(wasted_bits + 15) >> 3];
   char *ptr = buffer;
@@ -18,9 +19,10 @@ int FlacSubframe::write(std::ostream &os,
   }
   ptr = package(ptr, remaining_wasted_bits, 1ull, remainder, remainder_digit);
 
+  crc16_encodes(buffer, ptr, crc16);
   os.write(buffer, ptr - buffer);
 
-  data->write(os, remainder, remainder_digit);
+  data->write(os, remainder, remainder_digit, crc16);
 
   return RETURN_SUCCESS;
 }

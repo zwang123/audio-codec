@@ -2,6 +2,7 @@
 #include "FlacErrorCodes.h"
 #include "FlacFrame.h"
 #include "FlacUtilities.h"
+#include "crc.h"
 #include "utf8.h"
 
 namespace flac {
@@ -61,6 +62,8 @@ int FlacFrame::read(std::istream &is)
   read_uint8(is, crc8);
   // TODO subframe
   // TODO footer
+
+  return RETURN_SUCCESS;
 }
 
 int FlacFrame::write(std::ostream &os) const
@@ -73,26 +76,43 @@ int FlacFrame::write(std::ostream &os) const
   ptr = package<8>(ptr, size_rate, remainder, remainder_digit);
   ptr = package<8>(ptr, channel_bitdepth, remainder, remainder_digit);
 
+  // assume remainder_digit == 0
   ptr = utf8_encode(frame_number, ptr);
-  //ptr = package<8>(ptr, frame_number, remainder, remainder_digit);
   
   ptr = package(ptr, blocksize_bitsize, blocksize - 1, 
       remainder, remainder_digit);
   
-  // TODO sample rate
-
+  auto samplerate_record = samplerate;
+  if (size_rate & 2) samplerate_record /= 10;
+  else if (!(size_rate & 1)) samplerate_record /= 1000;
+  ptr = package(ptr, samplerate_bitsize, samplerate_record,
+      remainder, remainder_digit);
+  
   ptr = package<8>(ptr, crc8, remainder, remainder_digit);
+
+  uint8_t _crc8 = 0;
+  uint16_t _crc16 = 0;
+  for (const char *p = header_buffer; p != ptr; ++p) {
+    crc8_encode(*p, _crc8);
+    crc16_encode(*p, _crc16);
+  }
+
+  assert(_crc8 == 0);
+
   os.write(header_buffer, ptr - header_buffer);
 
   for (const auto &subframe : subframes) {
-    subframe.write(os, remainder, remainder_digit);
+    subframe.write(os, remainder, remainder_digit, _crc16);
   }
 
   if (remainder_digit) {
-    os.put(remainder << (8 - remainder_digit));
+    os.put(remainder <<= (8 - remainder_digit));
+    crc16_encode(remainder, _crc16);
     remainder = 0;
     remainder_digit = 0;
   }
+
+  assert(_crc16 == crc16);
 
   ptr = header_buffer;
   ptr = package<16>(ptr, crc16, remainder, remainder_digit);

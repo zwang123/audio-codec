@@ -73,5 +73,14 @@ namespace flac {
   {
     return crc_encode(input, output, divisor);
   }
+
+  inline
+  template <typename ForwardIterator>
+  void crc16_encodes(ForwardIterator beg, ForwardIterator end,
+      uint16_t &output, const uint16_t divisor = 0x8005)
+  {
+    while (beg != end)
+      crc16_encode(*beg++, output, divisor);
+  }
 }
 #endif // __FLAC__CRC_H_INCLUDED
