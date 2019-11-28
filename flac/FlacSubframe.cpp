@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include "FlacErrorCodes.h"
 #include "FlacSubframe.h"
 #include "FlacUtilities.h"
@@ -25,7 +26,17 @@ int FlacSubframe::read
   if (subframe_type & 0x20) {
     // LPC
     uint_fast8_t order = (subframe_type & 0x1f) + 1;
-  } else if (true);
+  } else if (subframe_type & 8) {
+    // FIXED
+    uint_fast8_t order = subframe_type & 7;
+  } else if (subframe_type == 0) {
+    // CONST
+  } else if (subframe_type == 1) {
+    // VERB
+  } else {
+    // ERROR
+    throw std::runtime_error("unknown subframe type");
+  }
   
 
   // TODO
