@@ -1,9 +1,10 @@
 #ifndef __FLAC__FLAC_METADATA_BLOCK_H_INCLUDED
 #define __FLAC__FLAC_METADATA_BLOCK_H_INCLUDED
 #include <cstdint>
-#include <utility>
+#include <memory>
 #include "FlacMetadataBlockStreaminfo.h"
 namespace flac {
+class FlacMetadataBlockData;
 class FlacMetadataBlock {
 public:
   bool last_metadata_block_flag() const 
@@ -17,6 +18,9 @@ public:
 
   int write(std::ostream &) const;
 
+  std::shared_ptr<const FlacMetadataBlockData> get_block_data () const
+  { return block_data; }
+
 private:
   constexpr static uint8_t LAST_METADATA_BLOCK_MASK = 1 << 7;
   constexpr static uint8_t DEFAULT_BLOCK_FLAG = LAST_METADATA_BLOCK_MASK | 0;
@@ -26,7 +30,7 @@ private:
   uint32_t block_length = FlacMetadataBlockStreaminfo::block_size;
 
   // data
-  std::shared_ptr<class FlacMetadataBlockData> block_data;
+  std::shared_ptr<FlacMetadataBlockData> block_data;
 };
 }
 #endif // __FLAC__FLAC_METADATA_BLOCK_H_INCLUDED

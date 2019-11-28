@@ -49,7 +49,6 @@ public:
   //std::istream &read(std::istream &, uint32_t) override;
   //std::ostream &write(std::ostream &) const override {return 0;}
 
-private:
   uint16_t min_block_size;
   uint16_t max_block_size;
   uint32_t min_frame_size;
@@ -59,6 +58,7 @@ private:
   uint8_t bits_per_sample;
   uint64_t total_samples;
   md5_type md5;
+private:
 };
 }
 #endif // __FLAC__FLAC_METADATA_BLOCK_STREAMINFO_H_INCLUDED

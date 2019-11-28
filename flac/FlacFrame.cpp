@@ -1,6 +1,7 @@
 #include <iostream>
 #include "FlacErrorCodes.h"
 #include "FlacFrame.h"
+#include "FlacMetadataBlockStreaminfo.h"
 #include "FlacUtilities.h"
 #include "crc.h"
 #include "utf8.h"
@@ -39,7 +40,9 @@ uint32_t FlacFrame::set_sample_rate(std::istream &is)
   if (rate_idx < 12) {
     samplerate_bitsize = 0;
     samplerate = sample_rate_array[rate_idx];
-    // TODO rate_idx == 0
+    if (rate_idx == 0) {
+      samplerate = pStreamInfo->sample_rate;
+    }
   } else {
     assert(rate_idx != 0xf);
     samplerate_bitsize = 8 << static_cast<bool>(rate_idx & 3);
@@ -52,12 +55,32 @@ uint32_t FlacFrame::set_sample_rate(std::istream &is)
   return samplerate;
 }
 
+uint8_t FlacFrame::set_bits_per_sample()
+{
+  uint8_t bit_size_code = (channel_bitdepth >> 1) & 7;
+  bits_per_sample = bit_size_code ?
+    ((bit_size_code < 4) + bit_size_code) << 2 :
+    pStreamInfo -> bits_per_sample;
+  return bits_per_sample;
+}
+
+void FlacFrame::test_pStreamInfo()
+{
+  size_rate &= 0xf0;
+  channel_bitdepth &= 0xf0;
+  set_sample_rate(std::cin);
+  set_bits_per_sample();
+  std::cout << __FILE__ << __LINE__ << std::endl;
+  std::cout << (unsigned) samplerate << std::endl;
+  std::cout << (unsigned) bits_per_sample << std::endl;
+}
+
 int FlacFrame::read(std::istream &is)
 {
   read_uint16(is, sync_word);
   read_uint8(is, size_rate);
   read_uint8(is, channel_bitdepth);
-  // TODO
+  set_bits_per_sample();
 
   frame_number = utf8_decode_stream(is);
 
@@ -66,6 +89,9 @@ int FlacFrame::read(std::istream &is)
   read_uint8(is, crc8);
   // TODO subframe
   // TODO footer
+
+  //DEBUG
+  test_pStreamInfo();
 
   return RETURN_SUCCESS;
 }

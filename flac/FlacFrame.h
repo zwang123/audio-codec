@@ -1,34 +1,39 @@
 #ifndef __FLAC__FLAC_FRAME_H_INCLUDED
 #define __FLAC__FLAC_FRAME_H_INCLUDED
 #include <cstdint>
+#include <memory>
 #include <vector>
 #include "FlacSubframe.h"
 
 //#include <iostream>
 
 namespace flac {
+class FlacMetadataBlockStreaminfo;
 class FlacFrame {
 public:
   FlacFrame() : subframes(2) {}
-  FlacFrame(std::istream &is) {read(is);} //TODO check validity
+  FlacFrame(std::istream &is, 
+      std::shared_ptr<const FlacMetadataBlockStreaminfo> _pStreamInfo
+      ) : pStreamInfo(_pStreamInfo) {read(is);} //TODO check validity
 
   bool variable_blocksize() const { return sync_word & 1; }
 
-  uint8_t bit_per_sample() const {
-    uint8_t bit_size_code = (channel_bitdepth >> 1) & 7;
-    // assert(bit_size_code);
-    return ((bit_size_code < 4) + bit_size_code) << 2;
-  }
-
   int read(std::istream &);
   int write(std::ostream &) const;
+
+  // DEBUG
+  void test_pStreamInfo();
+
 private:
+  constexpr static uint32_t MAX_FRAME_HEADER_SIZE = 16;
   static const uint32_t sample_rate_array[12];
 
   uint16_t set_subframe_blocksize(std::istream &);
   uint32_t set_sample_rate(std::istream &);
+  uint8_t set_bits_per_sample();
 
-  constexpr static uint32_t MAX_FRAME_HEADER_SIZE = 16;
+  std::shared_ptr<const FlacMetadataBlockStreaminfo> pStreamInfo;
+
   // header
   uint16_t sync_word = 0xfff8; // fixed blocksize
   uint8_t size_rate = 0xc9; // 4096 samples, 44.1kHz
@@ -41,8 +46,7 @@ private:
   uint32_t samplerate = 44100;
   unsigned samplerate_bitsize = 0;
 
-  // TODO
-  // bit sample rate not allowed
+  uint8_t bits_per_sample = 16;
 
   uint8_t crc8 = 0xc2;
 

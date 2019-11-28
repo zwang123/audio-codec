@@ -1,12 +1,13 @@
 #include <cstring>
 #include <fstream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include "FlacFrame.h"
 #include "FlacMetadataBlock.h"
 #include "FlacStream.h"
 
-#include <iostream>
+//#include <iostream>
 
 namespace flac{
   FlacStream::FlacStream(const char *filename)
@@ -25,10 +26,12 @@ namespace flac{
       metadata_blocks.emplace_back(file);
     } while (!metadata_blocks.back().last_metadata_block_flag());
 
-    std::cout << metadata_blocks.size() << std::endl;
+    //std::cout << metadata_blocks.size() << std::endl;
 
     // TODO
-    frames.emplace_back(file);
+    frames.emplace_back(file, std::dynamic_pointer_cast<
+        const FlacMetadataBlockStreaminfo>
+        (metadata_blocks.front().get_block_data()));
 
     //std::cout << std::hex;
 
