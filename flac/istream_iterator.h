@@ -1,3 +1,5 @@
+#ifndef __FLAC__ISTREAM_ITERATOR_H_INCLUDED
+#define __FLAC__ISTREAM_ITERATOR_H_INCLUDED
 #include <istream>
 
 namespace flac {
@@ -34,3 +36,4 @@ private:
   bool read_flag;
 };
 }
+#endif // __FLAC__ISTREAM_ITERATOR_H_INCLUDED

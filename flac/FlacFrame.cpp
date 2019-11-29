@@ -84,24 +84,19 @@ int FlacFrame::read(std::istream &is)
   std::cout << "channel_bitdepth: " << (unsigned)channel_bitdepth << std::endl;
   set_bits_per_sample();
 
-  {char c;is.get(c);std::cout<<(unsigned)(uint8_t)c<<std::endl;is.unget();}
+  //{char c;is.get(c);std::cout<<(unsigned)(uint8_t)c<<std::endl;is.unget();}
   frame_number = utf8_decode_stream(is);
   std::cout << "frame_number: " << frame_number << std::endl;
-  {is.unget();char c;is.get(c);std::cout<<(unsigned)(uint8_t)c<<std::endl;}
-  {char c;is.get(c);std::cout<<(unsigned)(uint8_t)c<<std::endl;is.unget();}
+  //{is.unget();char c;is.get(c);std::cout<<(unsigned)(uint8_t)c<<std::endl;}
 
   set_subframe_blocksize(is);
-  {is.unget();char c;is.get(c);std::cout<<(unsigned)(uint8_t)c<<std::endl;}
   set_sample_rate(is);
-  {is.unget();char c;is.get(c);std::cout<<(unsigned)(uint8_t)c<<std::endl;}
   read_uint8(is, crc8);
 
   std::cout << "crc8: " << (unsigned)crc8 << std::endl;
   //DEBUG
   //test_pStreamInfo();
 
-  std::cout << __FILE__ << __LINE__ << std::endl;
-  {char c;is.get(c);std::cout<<(unsigned)(uint8_t)c<<std::endl;is.unget();}
   uint8_t remainder = 0;
   unsigned remainder_digit = 0;
   subframes.clear();
@@ -116,7 +111,7 @@ int FlacFrame::read(std::istream &is)
 
   read_uint16(is, crc16);
 
-  std::cout << "crc16: " << crc16 << std::endl;
+  std::cout << "crc16: " << crc16 << std::endl<<std::endl;
 
   return RETURN_SUCCESS;
 }

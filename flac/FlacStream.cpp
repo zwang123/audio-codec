@@ -31,15 +31,18 @@ namespace flac{
 
     std::cout << std::hex;
 
+    auto pStreamInfo = std::dynamic_pointer_cast<
+          const FlacMetadataBlockStreaminfo>
+          (metadata_blocks.front().get_block_data());
+
     // TODO
-    frames.emplace_back(file, std::dynamic_pointer_cast<
-        const FlacMetadataBlockStreaminfo>
-        (metadata_blocks.front().get_block_data()));
+    for (int k = 0; k != 5; ++k) {
+      frames.emplace_back(file, pStreamInfo);
+    }
 
-
-    flac_seek_frame_header(file);
-    flac_seek_frame_header(file);
-    flac_seek_frame_header(file);
+    //flac_seek_frame_header(file);
+    //flac_seek_frame_header(file);
+    //flac_seek_frame_header(file);
 
     //for (int k = 0; k < 10; ++k) {
     //  std::cout << "FRAME HEADER START" << std::endl;

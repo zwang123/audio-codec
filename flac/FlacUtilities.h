@@ -167,7 +167,7 @@ namespace flac {
   {
     if (size <= remainder_digit) {
       data = remainder >> (remainder_digit - size);
-      remainder &= (1 << (remainder_digit - size) - 1);
+      remainder &= (1 << (remainder_digit - size)) - 1;
       return is;
     }
     T buffer = remainder << (size - remainder_digit);
@@ -184,8 +184,12 @@ namespace flac {
       uint8_t &remainder, unsigned &remainder_digit)
   {
     if (size <= remainder_digit) {
+      //std::cout << "remainder" << (unsigned)remainder << std::endl;
+      //std::cout << "remainder_digit" << remainder_digit << std::endl;
       data = remainder >> (remainder_digit -= size);
-      remainder &= (1 << (remainder_digit) - 1);
+      remainder &= (1 << (remainder_digit)) - 1;
+      //std::cout << "remainder" << (unsigned)remainder << std::endl;
+      //std::cout << "remainder_digit" << remainder_digit << std::endl;
       return is;
     }
     T buffer = remainder << (size -= remainder_digit);

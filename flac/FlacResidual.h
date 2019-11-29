@@ -30,10 +30,18 @@ public:
     rice_partitions.emplace_back(is, remainder, remainder_digit,
         rice_parameter_bit_size, 
         (blocksize >> partition_order) - predictor_order);
+
+    //std::cout << __FILE__ << __LINE__ << std::endl;
+    std::cout <<"rice_par_size"<<(unsigned)rice_parameter_bit_size << std::endl;
+    std::cout << "partition_order" << (unsigned)partition_order << std::endl;
+
     while (--partition_size) {
       rice_partitions.emplace_back(is, remainder, remainder_digit,
           rice_parameter_bit_size, blocksize >> partition_order);
     }
+    //std::cout << __FILE__ << __LINE__ << std::endl;
+    std::cout << "size: " << rice_partitions.size() << std::endl;
+
     return RETURN_SUCCESS;
   }
 
