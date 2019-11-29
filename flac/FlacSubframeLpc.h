@@ -14,6 +14,7 @@ namespace flac {
 class FlacSubframeLpc : public FlacSubframeData {
 using DataType = uint32_t;
 using value_type = std::valarray<DataType>; // ctor diff from vector
+using qlp_coeffs_type = std::valarray<int16_t>; // ctor diff from vector
 public:
   FlacSubframeLpc(
       std::istream &is, uint8_t &remainder, unsigned &remainder_digit,
@@ -35,9 +36,6 @@ public:
     ++qlp_coeff_precision;
     read_type_n_with_remainder(is, 5, qlp_coeff_shift, 
           remainder, remainder_digit); 
-    if (qlp_coeff_shift & 0x10) {
-      qlp_coeff_shift |= ~static_cast<decltype(qlp_coeff_shift)>(0xf);
-    }
     for (auto &value : qlp_coeffs)
       read_type_n_with_remainder(is, qlp_coeff_precision, value, 
             remainder, remainder_digit); 
@@ -67,7 +65,7 @@ private:
   value_type warm_up_samples;
   uint_fast8_t qlp_coeff_precision;
   int_fast8_t qlp_coeff_shift; // two's complement
-  value_type qlp_coeffs; // two's complement
+  qlp_coeffs_type qlp_coeffs; // two's complement
   FlacResidual residual;
 };
 }

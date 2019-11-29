@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <iostream>
+#include <type_traits>
 
 // read should overwrite data, and give 0 on unwritten bits
 // write should not care about higher bits
@@ -178,28 +179,30 @@ namespace flac {
     return is;
   }
 
+  // only use this when dealing with singed data
   template <typename T>
   std::istream &read_type_n_with_remainder(std::istream &is, 
-      std::size_t size, T &data, 
+      const std::size_t size, T &data, 
       uint8_t &remainder, unsigned &remainder_digit)
   {
+    assert(size <= 64);
     if (size <= remainder_digit) {
-      //std::cout << "remainder" << (unsigned)remainder << std::endl;
-      //std::cout << "remainder_digit" << remainder_digit << std::endl;
       data = remainder >> (remainder_digit -= size);
       remainder &= (1 << (remainder_digit)) - 1;
-      //std::cout << "remainder" << (unsigned)remainder << std::endl;
-      //std::cout << "remainder_digit" << remainder_digit << std::endl;
-      return is;
+    } else {
+      T buffer = remainder << (size - remainder_digit);
+      T tmp;
+      if (read_type_n(is, size - remainder_digit, tmp, remainder))
+        data = buffer | tmp;
+      remainder_digit = (((size - remainder_digit) ^ 7) + 1 & 7);
     }
-    T buffer = remainder << (size -= remainder_digit);
-    T tmp;
-    if (read_type_n(is, size, tmp, remainder))
-      data = buffer | tmp;
 
-    //remainder_digit = (size + 7) & ~7 - size;
-    remainder_digit = ((size ^ 7) + 1 & 7);
-
+    if (std::is_signed<T>::value && size) {
+      uint64_t signed_bit = (1 << (size - 1));
+      if (data & signed_bit) {
+        data |= static_cast<T>(~(signed_bit - 1));
+      }
+    }
     return is;
   }
 
