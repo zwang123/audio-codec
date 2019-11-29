@@ -75,8 +75,8 @@ namespace flac {
   }
 
   inline
-  template <typename ForwardIterator>
-  void crc16_encodes(ForwardIterator beg, ForwardIterator end,
+  template <typename InputIterator>
+  void crc16_encodes(InputIterator beg, InputIterator end,
       uint16_t &output, const uint16_t divisor = 0x8005)
   {
     while (beg != end)

@@ -4,14 +4,18 @@
 #include <cstdint>
 #include <istream>
 #include <iterator>
+#include "istream_iterator.h"
+
+#include <iostream>
 
 namespace flac {
   char *utf8_encode(uint64_t, char * const);
 
-  template <typename ForwardIterator>
-  uint64_t utf8_decode(ForwardIterator it)
+  template <typename InputIterator>
+  uint64_t utf8_decode(InputIterator it)
   {
     uint64_t rtn = static_cast<uint8_t>(*it++);
+    std::cout << "rtn: " << rtn << std::endl;
     uint_fast8_t n = 1;
     if (rtn & 0x80) {
       rtn ^= 0xc0;
@@ -34,7 +38,8 @@ namespace flac {
   inline
   uint64_t utf8_decode_stream(std::istream &is)
   {
-    return utf8_decode(std::istream_iterator<char>(is));
+    //return utf8_decode(std::istream_iterator<char>(is));
+    return utf8_decode(istream_iterator<char>(is));
   }
 }
 
