@@ -38,8 +38,7 @@ namespace flac {
   inline
   uint64_t utf8_decode_stream(std::istream &is)
   {
-    //return utf8_decode(std::istream_iterator<char>(is));
-    return utf8_decode(istream_iterator<char>(is));
+    return utf8_decode(istream_iterator(is));
   }
 }
 
